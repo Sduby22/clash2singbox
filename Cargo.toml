@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.4.8", features = ["derive"] }
-clash_config = { version = "0.1.0", path = "clash_config" }
-singbox_config = { version = "0.17.0", path = "../singbox_config" }
+clash_config = "0.1"
+singbox_config = "0.17"

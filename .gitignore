@@ -1,5 +1,4 @@
 /target
-clash_config/target
 *.lock
 *.json
 *.yml
