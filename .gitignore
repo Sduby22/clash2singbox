@@ -1,4 +1,2 @@
-/target
+target/
 *.lock
-*.json
-*.yml

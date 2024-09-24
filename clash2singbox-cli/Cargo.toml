@@ -1,0 +1,10 @@
+[package]
+name = "clash2singbox-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clash2singbox = { path = "../clash2singbox" }
+clash_config = { path = "../clash_config" }
+singbox_config = { path = "../singbox_config" }
+clap = { version = "4.4.8", features = ["derive"] }

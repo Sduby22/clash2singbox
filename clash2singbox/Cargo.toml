@@ -1,0 +1,9 @@
+[package]
+name = "clash2singbox"
+version = "0.1.0"
+edition = "2021"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clash_config = { path = "../clash_config" }
+singbox_config = { path = "../singbox_config" }

@@ -13,7 +13,7 @@ use clash_config::parse as clash_parse;
 use clash_config::def::Config as ClashConfig;
 use clash_config::def::Rule as ClashRule;
 
-use super::converters;
+use clash2singbox::converters;
 
 
 #[derive(Parser, Debug)]
@@ -75,14 +75,14 @@ enum Commands {
 impl Commands {
     pub fn run(&self) -> SingboxConfig {
         match self {
-            Commands::New => Commands::new(),
+            Commands::New => Commands::new_sconfig(),
             Commands::Gen { input, keep_rules } => Commands::gen(input, keep_rules),
             Commands::Update { input, update, section } => Commands::update(input, update, section),
             
         }
     }
 
-    fn new() -> SingboxConfig {
+    fn new_sconfig() -> SingboxConfig {
         SingboxConfig{
             inbounds: vec![],
             outbounds: vec![],
@@ -91,7 +91,7 @@ impl Commands {
     }
 
     fn gen(input: &PathBuf, keep_rules: &bool) -> SingboxConfig {
-        let clash = clash_parse(&fs::read_to_string(input).unwrap());
+        let clash = clash_parse(&fs::read_to_string(input).unwrap()).unwrap();
         SingboxConfig{
             inbounds: converters::config_to_inbounds(&clash),
             outbounds: Commands::gen_outbound(&clash, *keep_rules),
@@ -100,7 +100,9 @@ impl Commands {
         }
     }
 
-    fn update(input: &Option<PathBuf>, update: &PathBuf, section: &Vec<String>) -> SingboxConfig {
+    fn update(_input: &Option<PathBuf>, _update: &PathBuf, section: &Vec<String>) -> SingboxConfig {
+        let _ = section;
+        let _ = _update;
         SingboxConfig{
             inbounds: vec![],
             outbounds: vec![],
@@ -163,7 +165,7 @@ impl Commands {
                 _ => Vec::new(),
             };
             Route {
-                rules: rules,
+                rules,
                 ..Default::default()
             }
         }
@@ -192,14 +194,14 @@ impl Commands {
     }
 
     fn accumulate_rule<'a>(mut acc: HashMap<&'a String, Vec<&'a ClashRule>>, r: &'a ClashRule) -> HashMap<&'a String, Vec<&'a ClashRule>> {
-        let v = acc.entry(&r.target).or_insert(Vec::new());
+        let v = acc.entry(&r.target).or_default();
         v.push(r);
         acc
     }
 
-    fn construct_rule_vec(typ: &str, v: &Vec<&ClashRule>) -> Option<OneOrMany<String>> {
+    fn construct_rule_vec(typ: &str, v: &[&ClashRule]) -> Option<OneOrMany<String>> {
         let k: Vec<&String> = v.iter().filter(|r| r.category == typ).map(|r| &r.content).collect();
-        if k.len() == 0 {
+        if k.is_empty() {
             None
         }
         else if k.len() == 1 {
@@ -210,9 +212,9 @@ impl Commands {
         }
     }
 
-    fn construct_port_vec(typ: &str, v: &Vec<&ClashRule>) -> Option<OneOrMany<u16>> {
+    fn construct_port_vec(typ: &str, v: &[&ClashRule]) -> Option<OneOrMany<u16>> {
         let k: Vec<u16> = v.iter().filter(|r| r.category == typ).flat_map(|r| r.content.parse()).collect();
-        if k.len() == 0 {
+        if k.is_empty() {
             None
         }
         else if k.len() == 1 {
