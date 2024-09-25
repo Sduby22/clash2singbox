@@ -60,4 +60,8 @@ pub struct Rule {
     pub wifi_bssid: Option<OneOrMany<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rule_set: Option<OneOrMany<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_is_private: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_ip_is_private: Option<bool>,
 }
