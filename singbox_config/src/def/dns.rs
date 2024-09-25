@@ -19,6 +19,8 @@ pub struct Dns {
     pub independent_cache: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverse_mapping: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fakeip: Option<FakeIP>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -53,6 +55,16 @@ pub struct Server {
     pub detour: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_subnet: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct FakeIP {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inet4_range: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inet6_range: Option<String>,
 }
 
 #[cfg(test)]
